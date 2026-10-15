@@ -106,7 +106,7 @@ poll_state            (single row, id = 1)
 
 ## Phases
 
-1. **Spike** (done, see Spike result): `src/kilometrix/spike.py` logs in and prints odometer and location for the VIN. Run it, check the output, and record the result here.
+1. **Spike** (done, see Spike result): a one-off script logged in and printed odometer and location for the VIN. The script was removed once the poller covered the same read path.
 2. **Poller + detection:** SQLAlchemy models, Alembic migration, detection logic, tests against SQLite. Verify against Postgres in a container.
 3. **Web API + UI:** list, totals, tagging, timezone display.
 4. **Kubernetes manifests:** image build, CNPG database, Deployments, Job, Secret.
@@ -122,7 +122,7 @@ poll_state            (single row, id = 1)
 
 ## Spike result
 
-Run: `uv run python -m kilometrix.spike` (2026-10-15).
+Recorded 2026-10-15 from the one-off spike script (since removed).
 
 - **Login:** ok (`RENAULT_LOCALE=nl_BE`, `RENAULT_COUNTRY=BE`).
 - **Accounts:** the login exposes 2 Kamereon accounts. The first is empty; the VIN is in the second. Account selection matches the VIN against `vehicleLinks`.

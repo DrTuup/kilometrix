@@ -1,0 +1,21 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.pytest_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv
+
+# Secrets and local data
+.env
+*.db
+*.db-journal
+
+# Node tooling (semantic-release, commitlint)
+node_modules/
+release-version.txt

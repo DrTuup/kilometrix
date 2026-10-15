@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: km
+          POSTGRES_PASSWORD: km
+          POSTGRES_DB: kilometrix
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U km"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      KILOMETRIX_TEST_PG_URL: postgresql+psycopg://km:km@localhost:5432/kilometrix
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.13.0"
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run pytest -q
+      - name: Migrations apply and match models (Postgres)
+        env:
+          DATABASE_URL: postgresql+psycopg://km:km@localhost:5432/kilometrix
+        run: |
+          uv run alembic upgrade head
+          uv run alembic check
+
+  commitlint:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint PR commits (conventional commits)
+        run: npx commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.event.pull_request.head.sha }}" --verbose
+
+  docker-build:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: kilometrix:pr

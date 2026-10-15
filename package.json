@@ -1,0 +1,20 @@
+{
+  "name": "kilometrix",
+  "version": "0.0.0-development",
+  "private": true,
+  "description": "Kilometrix release tooling (semantic-release, commitlint). The app itself is Python.",
+  "license": "UNLICENSED",
+  "scripts": {
+    "release": "semantic-release",
+    "commitlint": "commitlint --from HEAD~1 --to HEAD"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.6",
+    "semantic-release": "^24.0.0"
+  }
+}

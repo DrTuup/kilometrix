@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kilometrix</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="logo" aria-hidden="true">⚡</span>
+    <div>
+      <h1>Kilometrix</h1>
+      <p class="sub">Megane E-Tech · trip log</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="card filters">
+    <label>From <input type="date" id="from"></label>
+    <label>To <input type="date" id="to"></label>
+    <label>Tag <input type="text" id="tag" list="tag-list" placeholder="any tag"></label>
+    <datalist id="tag-list"></datalist>
+    <label>Group by
+      <select id="period">
+        <option value="day">day</option>
+        <option value="week">week</option>
+        <option value="month" selected>month</option>
+      </select>
+    </label>
+    <button id="apply" class="btn primary">Apply</button>
+  </section>
+
+  <section class="kpis">
+    <div class="kpi"><span class="kpi-label">Total</span><span class="kpi-value" id="kpi-total">–</span><span class="kpi-unit">km</span></div>
+    <div class="kpi"><span class="kpi-label">Untagged</span><span class="kpi-value" id="kpi-untagged">–</span><span class="kpi-unit">km</span></div>
+    <div class="kpi"><span class="kpi-label">Trips</span><span class="kpi-value" id="kpi-trips">–</span><span class="kpi-unit">shown</span></div>
+  </section>
+
+  <section class="grid2">
+    <div class="card">
+      <h2>By tag</h2>
+      <ul class="bars" id="by-tag"></ul>
+    </div>
+    <div class="card">
+      <h2>By period</h2>
+      <ul class="bars" id="by-period"></ul>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Trips</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Start</th><th>End</th><th class="num">km</th><th>Start location</th><th>End location</th><th>Tags</th>
+          </tr>
+        </thead>
+        <tbody id="trips"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

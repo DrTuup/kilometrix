@@ -9,6 +9,11 @@ ENV UV_COMPILE_BYTECODE=1 \
     UV_PYTHON_DOWNLOADS=never \
     UV_PROJECT_ENVIRONMENT=/app/.venv
 
+# Version comes from the release tag (hatch-vcs). .git is not in the build
+# context, so CI passes the version in explicitly.
+ARG VERSION=0.0.0.dev0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=${VERSION}
+
 WORKDIR /app
 # Dependencies first, so this layer caches while only source changes
 COPY pyproject.toml uv.lock README.md ./

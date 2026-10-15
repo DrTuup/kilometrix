@@ -19,3 +19,4 @@ wheels/
 # Node tooling (semantic-release, commitlint)
 node_modules/
 release-version.txt
+src/kilometrix/_version.py

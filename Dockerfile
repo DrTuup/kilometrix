@@ -27,7 +27,7 @@ RUN uv sync --locked --no-dev
 # ---- runtime stage ----
 FROM python:3.12-slim AS runtime
 
-RUN groupadd --system app && useradd --system --gid app --home /app app \
+RUN groupadd --system --gid 65532 app && useradd --system --uid 65532 --gid app --home /app app \
     && mkdir -p /data && chown app:app /data
 
 WORKDIR /app
@@ -39,7 +39,8 @@ ENV PATH="/app/.venv/bin:$PATH" \
     DATABASE_URL="sqlite:////data/kilometrix.db"
 
 VOLUME ["/data"]
-USER app
+# Numeric UID so Kubernetes runAsNonRoot can verify it without a name lookup.
+USER 65532:65532
 EXPOSE 8000
 
 # Web by default. Override the command for the poller:

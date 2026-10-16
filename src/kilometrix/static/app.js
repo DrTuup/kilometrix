@@ -16,10 +16,13 @@ function fmtTime(iso) {
   return iso.slice(0, 16).replace("T", " ");
 }
 
-function locationCell(lat, lon, at) {
+function locationCell(place, lat, lon, at) {
   if (lat == null || lon == null) return '<span class="muted">no location</span>';
   const stamp = at ? `<br><small class="muted">${esc(fmtTime(at))}</small>` : "";
-  return `${esc(lat.toFixed(4))}, ${esc(lon.toFixed(4))}${stamp}`;
+  const coords = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+  const mapUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=16/${lat}/${lon}`;
+  const label = place ? `<span>${esc(place)}</span>` : "";
+  return `${label}<br><a class="coords muted" href="${mapUrl}" target="_blank" rel="noopener">${esc(coords)}</a>${stamp}`;
 }
 
 function filterQuery() {
@@ -78,8 +81,8 @@ async function loadTrips(params) {
         ? esc(fmtTime(t.ended_at))
         : '<span class="live">in progress</span>'}</td>
       <td class="num km">${fmtKm(t.distance_km)}</td>
-      <td>${locationCell(t.start_lat, t.start_lon, null)}</td>
-      <td>${locationCell(t.end_lat, t.end_lon, t.position_at)}</td>
+      <td>${locationCell(t.start_place, t.start_lat, t.start_lon, null)}</td>
+      <td>${locationCell(t.end_place, t.end_lat, t.end_lon, t.position_at)}</td>
       <td>
         <div class="tag-edit">
           ${tagChips(t.tags)}

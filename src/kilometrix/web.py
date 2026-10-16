@@ -23,6 +23,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, selectinload
 
 from kilometrix.db import Base, Tag, Trip, make_engine, normalise_tag, trip_tags
+from kilometrix.geocode import cache_key, resolve_places
 
 STATIC = Path(__file__).parent / "static"
 
@@ -33,6 +34,7 @@ class WebSettings:
 
     database_url: str
     display_timezone: str
+    user_agent: str
 
 
 @lru_cache
@@ -41,6 +43,9 @@ def get_settings() -> WebSettings:
     return WebSettings(
         database_url=os.environ.get("DATABASE_URL", "sqlite:///./kilometrix.db"),
         display_timezone=os.environ.get("DISPLAY_TIMEZONE", "Europe/Brussels"),
+        user_agent=os.environ.get(
+            "GEOCODE_USER_AGENT", "kilometrix/1.0 (https://kilometrix.local.rubenclaessens.nl)"
+        ),
     )
 
 
@@ -87,9 +92,18 @@ class TripOut(BaseModel):
     end_lon: float | None
     position_at: str | None
     tags: list[str]
+    start_place: str | None = None
+    end_place: str | None = None
 
 
-def trip_out(trip: Trip) -> TripOut:
+def trip_out(trip: Trip, places: dict[str, str] | None = None) -> TripOut:
+    places = places or {}
+
+    def place(lat: float | None, lon: float | None) -> str | None:
+        if lat is None or lon is None:
+            return None
+        return places.get(cache_key(lat, lon))
+
     return TripOut(
         id=trip.id,
         started_at=to_local_iso(trip.started_at),
@@ -103,6 +117,8 @@ def trip_out(trip: Trip) -> TripOut:
         end_lon=trip.end_lon,
         position_at=to_local_iso(trip.position_at),
         tags=sorted(t.name for t in trip.tags),
+        start_place=place(trip.start_lat, trip.start_lon),
+        end_place=place(trip.end_lat, trip.end_lon),
     )
 
 
@@ -131,7 +147,15 @@ def create_app() -> FastAPI:
             stmt = stmt.where(Trip.started_at < local_day_bounds(day_to)[1])
         if tag:
             stmt = stmt.where(Trip.tags.any(Tag.name == normalise_tag(tag)))
-        return [trip_out(t) for t in session.scalars(stmt).all()]
+        trips = session.scalars(stmt).all()
+        points = [
+            (lat, lon)
+            for t in trips
+            for lat, lon in ((t.start_lat, t.start_lon), (t.end_lat, t.end_lon))
+            if lat is not None and lon is not None
+        ]
+        places = resolve_places(session, points, user_agent=get_settings().user_agent)
+        return [trip_out(t, places) for t in trips]
 
     @app.get("/totals")
     def totals(

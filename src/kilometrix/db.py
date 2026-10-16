@@ -90,6 +90,16 @@ class PollStateRow(Base):
     unchanged_polls: Mapped[int] = mapped_column(Integer, default=0)
 
 
+class GeocodeCache(Base):
+    """Reverse-geocoding results, keyed by coordinates rounded to 4 decimals (~11 m)."""
+
+    __tablename__ = "geocode_cache"
+
+    key: Mapped[str] = mapped_column(String(32), primary_key=True)
+    place: Mapped[str] = mapped_column(String(255))
+    looked_up_at: Mapped[datetime] = mapped_column(TS, server_default=func.now())
+
+
 def normalise_tag(name: str) -> str:
     """Tags are free-form, stored lowercase and trimmed."""
     cleaned = name.strip().lower()

@@ -81,7 +81,7 @@ jobs:
           labels: |
             org.opencontainers.image.title=kilometrix
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with:
           context: .
           push: true

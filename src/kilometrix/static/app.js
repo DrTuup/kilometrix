@@ -16,7 +16,7 @@ function fmtTime(iso) {
   return iso.slice(0, 16).replace("T", " ");
 }
 
-function location(lat, lon, at) {
+function locationCell(lat, lon, at) {
   if (lat == null || lon == null) return '<span class="muted">no location</span>';
   const stamp = at ? `<br><small class="muted">${esc(fmtTime(at))}</small>` : "";
   return `${esc(lat.toFixed(4))}, ${esc(lon.toFixed(4))}${stamp}`;
@@ -78,8 +78,8 @@ async function loadTrips(params) {
         ? esc(fmtTime(t.ended_at))
         : '<span class="live">in progress</span>'}</td>
       <td class="num km">${fmtKm(t.distance_km)}</td>
-      <td>${location(t.start_lat, t.start_lon, null)}</td>
-      <td>${location(t.end_lat, t.end_lon, t.position_at)}</td>
+      <td>${locationCell(t.start_lat, t.start_lon, null)}</td>
+      <td>${locationCell(t.end_lat, t.end_lon, t.position_at)}</td>
       <td>
         <div class="tag-edit">
           ${tagChips(t.tags)}

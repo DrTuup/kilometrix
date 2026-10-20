@@ -9,8 +9,8 @@
     "commitlint": "commitlint --from HEAD~1 --to HEAD"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.0.0",
-    "@commitlint/config-conventional": "^19.0.0",
+    "@commitlint/cli": "^21.0.0",
+    "@commitlint/config-conventional": "^21.0.0",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/github": "^11.0.6",
     "semantic-release": "^24.0.0"

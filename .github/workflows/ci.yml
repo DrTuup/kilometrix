@@ -30,7 +30,7 @@ jobs:
       KILOMETRIX_TEST_PG_URL: postgresql+psycopg://km:km@localhost:5432/kilometrix
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v10.3.2
         with:
           version: "0.13.1"
           enable-cache: true

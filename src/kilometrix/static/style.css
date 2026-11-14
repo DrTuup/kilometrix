@@ -139,4 +139,23 @@ small.muted { font-size: .78rem; }
   .filters { display: none; margin-top: .9rem; }
   .filters.open { display: flex; }
   .filters label, .filters input, .filters select { width: 100%; }
+
+  /* Trips as cards */
+  table, tbody { display: block; }
+  thead { display: none; }
+  tbody tr {
+    display: grid; grid-template-columns: 1fr 1fr; gap: .4rem .8rem;
+    padding: .9rem 0; border-bottom: 1px solid var(--line);
+  }
+  tbody td { display: block; border: 0; padding: 0; white-space: normal; }
+  tbody td[data-label]::before {
+    content: attr(data-label); display: block; font-size: .7rem; text-transform: uppercase;
+    letter-spacing: .5px; color: var(--muted);
+  }
+  td.c-km { grid-column: 1 / -1; order: -1; text-align: left; font-size: 1.8rem; font-weight: 700; }
+  td.c-km::after { content: " km"; font-size: .9rem; font-weight: 500; color: var(--muted); }
+  td.c-tags { grid-column: 1 / -1; }
+  td.empty { grid-column: 1 / -1; }
+  .tag-edit { flex-wrap: wrap; }
+  .tag-edit input { min-width: 0; flex: 1 1 8rem; width: auto; }
 }

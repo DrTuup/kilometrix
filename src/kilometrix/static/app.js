@@ -76,14 +76,14 @@ async function loadTrips(params) {
   $("kpi-trips").textContent = trips.length;
   $("trips").innerHTML = trips.map((t) => `
     <tr>
-      <td>${esc(fmtTime(t.started_at))}</td>
-      <td>${t.ended_at
+      <td class="c-start" data-label="Start">${esc(fmtTime(t.started_at))}</td>
+      <td class="c-end" data-label="End">${t.ended_at
         ? esc(fmtTime(t.ended_at))
         : '<span class="live">in progress</span>'}</td>
-      <td class="num km">${fmtKm(t.distance_km)}</td>
-      <td>${locationCell(t.start_place, t.start_lat, t.start_lon, null)}</td>
-      <td>${locationCell(t.end_place, t.end_lat, t.end_lon, t.position_at)}</td>
-      <td>
+      <td class="num km c-km">${fmtKm(t.distance_km)}</td>
+      <td class="c-from" data-label="From">${locationCell(t.start_place, t.start_lat, t.start_lon, null)}</td>
+      <td class="c-to" data-label="To">${locationCell(t.end_place, t.end_lat, t.end_lon, t.position_at)}</td>
+      <td class="c-tags">
         <div class="tag-edit">
           ${tagChips(t.tags)}
           <input type="text" data-trip="${t.id}" value="${esc(t.tags.join(", "))}" placeholder="add tags">

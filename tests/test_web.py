@@ -56,6 +56,13 @@ def test_index_and_static_served(client):
     assert client.get("/static/app.js").status_code == 200
 
 
+def test_index_references_assets(client):
+    html = client.get("/").text
+    for asset in ("/static/style.css", "/static/app.js"):
+        assert asset in html
+        assert client.get(asset).status_code == 200
+
+
 def test_list_trips_in_display_timezone(client):
     trips = client.get("/trips").json()
     assert len(trips) == 2

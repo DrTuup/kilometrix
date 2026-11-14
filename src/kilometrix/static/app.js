@@ -130,3 +130,8 @@ $("trips").addEventListener("click", (e) => {
   if (id) saveTags(id);
 });
 refresh();
+
+document.getElementById("filters-toggle").addEventListener("click", (e) => {
+  const open = document.getElementById("filters").classList.toggle("open");
+  e.currentTarget.setAttribute("aria-expanded", String(open));
+});

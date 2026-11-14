@@ -19,7 +19,9 @@
 </header>
 
 <main>
-  <section class="card filters">
+  <section class="card filters-bar">
+    <button type="button" id="filters-toggle" class="btn filters-toggle" aria-expanded="false" aria-controls="filters">Filters</button>
+    <div class="filters" id="filters">
     <label>From <input type="date" id="from"></label>
     <label>To <input type="date" id="to"></label>
     <label>Tag <input type="text" id="tag" list="tag-list" placeholder="any tag"></label>
@@ -32,6 +34,7 @@
       </select>
     </label>
     <button id="apply" class="btn primary">Apply</button>
+    </div>
   </section>
 
   <section class="kpis">

@@ -63,6 +63,8 @@ main > * { min-width: 0; }
 h2 { margin: 0 0 .75rem; font-size: 1rem; font-weight: 600; }
 
 /* Filters */
+.filters-bar { position: sticky; top: 0; z-index: 10; }
+.filters-toggle { display: none; }
 .filters { display: flex; flex-wrap: wrap; gap: .9rem; align-items: flex-end; }
 .filters label { display: flex; flex-direction: column; gap: .3rem; font-size: .8rem; color: var(--muted); }
 input, select, button { font: inherit; }
@@ -132,5 +134,9 @@ small.muted { font-size: .78rem; }
 
 @media (max-width: 640px) {
   .kpi-value { font-size: 1.6rem; }
+  .filters-bar { position: static; }
+  .filters-toggle { display: block; width: 100%; }
+  .filters { display: none; margin-top: .9rem; }
+  .filters.open { display: flex; }
   .filters label, .filters input, .filters select { width: 100%; }
 }

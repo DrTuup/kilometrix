@@ -89,6 +89,7 @@ async function loadTrips(params) {
           <input type="text" data-trip="${t.id}" value="${esc(t.tags.join(", "))}" placeholder="add tags">
           <button class="btn" data-save="${t.id}">Save</button>
         </div>
+        <p class="error tag-error" data-error="${t.id}" role="alert" hidden></p>
       </td>
     </tr>`).join("") || '<tr><td colspan="6" class="empty">no trips match these filters</td></tr>';
 }
@@ -110,6 +111,8 @@ async function refresh() {
 async function saveTags(id) {
   const input = document.querySelector(`input[data-trip="${id}"]`);
   const tags = input.value.split(",").map((s) => s.trim()).filter(Boolean);
+  const errorEl = document.querySelector(`[data-error="${id}"]`);
+  errorEl.hidden = true;
   const res = await fetch(`/trips/${id}/tags`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -117,7 +120,8 @@ async function saveTags(id) {
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    alert(`Could not save tags: ${body.detail ?? res.status}`);
+    errorEl.textContent = `Could not save tags: ${body.detail ?? res.status}`;
+    errorEl.hidden = false;
     return;
   }
   await refresh();

@@ -76,19 +76,20 @@ async function loadTrips(params) {
   $("kpi-trips").textContent = trips.length;
   $("trips").innerHTML = trips.map((t) => `
     <tr>
-      <td>${esc(fmtTime(t.started_at))}</td>
-      <td>${t.ended_at
+      <td class="c-start" data-label="Start">${esc(fmtTime(t.started_at))}</td>
+      <td class="c-end" data-label="End">${t.ended_at
         ? esc(fmtTime(t.ended_at))
         : '<span class="live">in progress</span>'}</td>
-      <td class="num km">${fmtKm(t.distance_km)}</td>
-      <td>${locationCell(t.start_place, t.start_lat, t.start_lon, null)}</td>
-      <td>${locationCell(t.end_place, t.end_lat, t.end_lon, t.position_at)}</td>
-      <td>
+      <td class="num km c-km">${fmtKm(t.distance_km)}</td>
+      <td class="c-from" data-label="From">${locationCell(t.start_place, t.start_lat, t.start_lon, null)}</td>
+      <td class="c-to" data-label="To">${locationCell(t.end_place, t.end_lat, t.end_lon, t.position_at)}</td>
+      <td class="c-tags">
         <div class="tag-edit">
           ${tagChips(t.tags)}
           <input type="text" data-trip="${t.id}" value="${esc(t.tags.join(", "))}" placeholder="add tags">
           <button class="btn" data-save="${t.id}">Save</button>
         </div>
+        <p class="error tag-error" data-error="${t.id}" role="alert" hidden></p>
       </td>
     </tr>`).join("") || '<tr><td colspan="6" class="empty">no trips match these filters</td></tr>';
 }
@@ -110,6 +111,8 @@ async function refresh() {
 async function saveTags(id) {
   const input = document.querySelector(`input[data-trip="${id}"]`);
   const tags = input.value.split(",").map((s) => s.trim()).filter(Boolean);
+  const errorEl = document.querySelector(`[data-error="${id}"]`);
+  errorEl.hidden = true;
   const res = await fetch(`/trips/${id}/tags`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -117,7 +120,8 @@ async function saveTags(id) {
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    alert(`Could not save tags: ${body.detail ?? res.status}`);
+    errorEl.textContent = `Could not save tags: ${body.detail ?? res.status}`;
+    errorEl.hidden = false;
     return;
   }
   await refresh();
@@ -130,3 +134,8 @@ $("trips").addEventListener("click", (e) => {
   if (id) saveTags(id);
 });
 refresh();
+
+document.getElementById("filters-toggle").addEventListener("click", (e) => {
+  const open = document.getElementById("filters").classList.toggle("open");
+  e.currentTarget.setAttribute("aria-expanded", String(open));
+});

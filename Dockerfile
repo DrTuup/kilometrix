@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # ---- build stage: resolve locked dependencies with uv ----
-FROM python:3.12-slim AS builder
+FROM python:3.15-slim AS builder
 COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /usr/local/bin/uv
 
 ENV UV_COMPILE_BYTECODE=1 \
@@ -25,7 +25,7 @@ COPY alembic.ini ./
 RUN uv sync --locked --no-dev
 
 # ---- runtime stage ----
-FROM python:3.12-slim AS runtime
+FROM python:3.15-slim AS runtime
 
 RUN groupadd --system --gid 65532 app && useradd --system --uid 65532 --gid app --home /app app \
     && mkdir -p /data && chown app:app /data

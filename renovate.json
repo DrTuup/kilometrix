@@ -1,25 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
-  "platformAutomerge": true,
-  "automergeStrategy": "squash",
-  "packageRules": [
-    {
-      "description": "Group all minor and patch updates into one PR. Commit as fix(deps) so semantic-release cuts a patch release.",
-      "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "non-major dependencies",
-      "semanticCommitType": "fix",
-      "semanticCommitScope": "deps",
-      "automerge": true
-    },
-    {
-      "description": "Major updates stay separate, keep chore(deps) and are never auto-merged.",
-      "matchUpdateTypes": ["major"],
-      "semanticCommitType": "chore",
-      "semanticCommitScope": "deps",
-      "automerge": false
-    }
-  ]
+  "extends": ["github>DrTuup/renovate-config"]
 }
